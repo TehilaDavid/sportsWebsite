@@ -1,25 +1,34 @@
-import logo from './logo.svg';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+import axios from "axios";
+import Tables from "./Tables";
+import {BrowserRouter, NavLink, Route, Routes} from "react-router-dom";
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+class App extends Component {
+
+
+
+
+    render() {
+        return (
+            <div className={"App"}>
+                <BrowserRouter>
+                    <NavLink style={{margin : "10px"}} to={"/tables"}>Tables</NavLink>
+                    {/*<NavLink style={{margin : "10px"}} to={"/smile"}>Smile</NavLink>*/}
+                    {/*<NavLink style={{margin : "10px"}} to={"/counter"}>Counter</NavLink>*/}
+
+                    <Routes>
+                        <Route path={"/tables"} element={<Tables />}/>
+                        {/*<Route path={"*"} element={<NoPage/>}/>*/}
+
+                    </Routes>
+                </BrowserRouter>
+
+            </div>
+        );
+    }
 }
 
 export default App;
