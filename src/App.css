@@ -3,3 +3,23 @@
   font-size: 30px;
 }
 
+table {
+  font-size: 20px;
+  text-align: center;
+  border-radius: 10px;
+  margin-outside: 10px;
+}
+
+tr, td {
+  width: 300px;
+  height: 30px;
+}
+
+table, tr, td {
+  border: 2px solid black;
+  margin: 0 auto;
+}
+
+
+
+
