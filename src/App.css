@@ -1,6 +1,9 @@
-.App {
+div {
   text-align: center;
   font-size: 30px;
+}
+button {
+  margin: 10px;
 }
 
 table {

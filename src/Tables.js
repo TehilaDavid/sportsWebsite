@@ -1,90 +1,90 @@
 import React, {Component} from 'react';
-import PropTypes from 'prop-types';
 import axios from "axios";
+import LeaguesSelect from "./LeaguesSelect";
 
 class Tables extends Component {
 
-
     state = {
-        leagues: [],
         teams: [],
-        league: "none",
+        // scoreInfo : {score: 0, goalsDifference: 0}
     }
 
-    getLeagues = () => {
-        axios.get('https://app.seker.live/fm1/leagues')
+    getTeams = (leagueId) => {
+        let teamsToAdd = [];
+        axios.get('https://app.seker.live/fm1/teams/' + leagueId)
             .then((response) => {
-                // debugger
+                response.data.map((team, index) => {
+                    // this.calculateScore(team.id, leagueId)
+                    teamsToAdd.push({id: team.id, name: team.name, information: this.calculateScore(team.id, leagueId)})
+                })
                 this.setState({
-                    leagues: response.data,
+                    teams: teamsToAdd,
                 })
             });
     }
 
-    componentDidMount() {
-        this.getLeagues()
-    }
+    calculateScore = (teamId, leaguesId) => {
+        let calculateScoreToAdd = {score: 0, goalsDifference: 0};
+        let points = 0;
+        let currentTeamGoals = 0;
+        let rivalTeamGoals = 0;
 
-    leagueChanged = (event) => {
-
-        this.setState({
-            league: event.target.value
-        })
-
-
-    }
-
-    leagueChangedButton = () => {
-
-        axios.get('https://app.seker.live/fm1/teams/' + this.state.league)
+        axios.get('https://app.seker.live/fm1/history/' + leaguesId + "/" + teamId)
             .then((response) => {
-                this.setState({
-                    teams: response.data,
-                })
-            });
-    }
+                const isHomeTeam = (response.data[0].homeTeam.id === teamId)
 
+                response.data.map((round) => {
+                    let currentRoundTeamGoals = 0;
+                    let rivalRoundTeamGoals = 0;
+
+                    round.goals.map((goal) => {
+                        if ((goal.home && isHomeTeam) || (!goal.home && !isHomeTeam)){
+                            currentRoundTeamGoals ++;
+                        }else {
+                            rivalRoundTeamGoals ++;
+                        }
+                    })
+
+                    if (currentRoundTeamGoals > rivalRoundTeamGoals) {
+                        points += 3;
+                    }else if (currentRoundTeamGoals === rivalRoundTeamGoals){
+                        points += 1;
+                    }
+                    currentTeamGoals += currentRoundTeamGoals;
+                    rivalTeamGoals += rivalRoundTeamGoals;
+                })
+                calculateScoreToAdd = {score: points, goalsDifference: (currentTeamGoals - rivalTeamGoals)}
+
+                // this.setState({
+                //     scoreInfo : calculateScoreToAdd
+                // })
+            });
+        debugger
+        return calculateScoreToAdd;
+    }
 
     render() {
         return (
             <div>
-                <select value={this.state.league} onChange={this.leagueChanged}>
-                    <option value={"none"} disabled={true}>SELECT LEAGUE</option>
+                <LeaguesSelect responseClick={this.getTeams.bind(this)}/>
+                <table>
+                    <th>
+                        Leagues Teams
+                    </th>
                     {
-                        this.state.leagues.map((item) => {
+                        this.state.teams.map((team) => {
                             return (
-                                <option value={item.id}>{item.name + " League"}</option>
+                                <tr>
+                                    <td> {team.name} </td>
+                                    <td> {team.information.goalsDifference} </td>
+                                </tr>
                             )
                         })
                     }
-                </select>
-                <button onClick={this.leagueChangedButton}>Enter</button>
-
-
-                    <table>
-                        <th>
-                            Leagues Teams
-                        </th>
-                        {
-                            this.state.teams.map((team) => {
-                                return (
-                                    <tr>
-
-                                        <td> {team.name} </td>
-
-
-                                    </tr>
-                                )
-                            })
-                        }
-                    </table>
-
-
+                </table>
             </div>
 
         );
     }
 }
-
-
 export default Tables;
