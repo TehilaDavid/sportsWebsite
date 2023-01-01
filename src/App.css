@@ -1,4 +1,4 @@
-div {
+div{
   text-align: center;
   font-size: 30px;
 }
@@ -13,7 +13,7 @@ table {
   margin-outside: 10px;
 }
 
-tr, td {
+tr, td, th {
   width: 300px;
   height: 30px;
 }
@@ -23,6 +23,15 @@ table, tr, td {
   margin: 0 auto;
 }
 
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+p {
+  text-decoration: underline;
+}
 
 
 
