@@ -19,7 +19,7 @@ class Tables extends Component {
         let teamsToAdd = [];
         axios.get('https://app.seker.live/fm1/teams/' + leagueId)
             .then((response) => {
-                response.data.forEach((team) => {
+                response.data.map((team) => {
                     let points = 0;
                     let currentTeamGoals = 0;
                     let rivalTeamGoals = 0;
@@ -28,12 +28,12 @@ class Tables extends Component {
                         .then((response) => {
                             let teamHistory = [];
 
-                            response.data.forEach((round, index) => {
+                            response.data.map((round, index) => {
                                 const isHomeTeam = (response.data[index].homeTeam.id === team.id)
                                 let currentRoundTeamGoals = 0;
                                 let rivalRoundTeamGoals = 0;
 
-                                round.goals.forEach((goal) => {
+                                round.goals.map((goal) => {
                                     if ((goal.home && isHomeTeam) || (!goal.home && !isHomeTeam)){
                                         currentRoundTeamGoals ++;
                                     }else {

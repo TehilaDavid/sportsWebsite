@@ -26,12 +26,17 @@ table, tr, td {
 ul {
   list-style-type: none;
   margin: 20px;
-  /*padding: 0;*/
+  border-radius: 100px;
+  border-style: inset;
+  padding: 0;
 }
 
 p {
   text-decoration: underline;
 }
 
-
-
+input {
+  margin: 20px;
+  width: 100px;
+  height: 20px;
+}
