@@ -19,7 +19,7 @@ class Tables extends Component {
         let teamsToAdd = [];
         axios.get('https://app.seker.live/fm1/teams/' + leagueId)
             .then((response) => {
-                response.data.map((team) => {
+                response.data.forEach((team) => {
                     let points = 0;
                     let currentTeamGoals = 0;
                     let rivalTeamGoals = 0;
@@ -28,12 +28,12 @@ class Tables extends Component {
                         .then((response) => {
                             let teamHistory = [];
 
-                            response.data.map((round, index) => {
+                            response.data.forEach((round, index) => {
                                 const isHomeTeam = (response.data[index].homeTeam.id === team.id)
                                 let currentRoundTeamGoals = 0;
                                 let rivalRoundTeamGoals = 0;
 
-                                round.goals.map((goal) => {
+                                round.goals.forEach((goal) => {
                                     if ((goal.home && isHomeTeam) || (!goal.home && !isHomeTeam)){
                                         currentRoundTeamGoals ++;
                                     }else {
@@ -104,7 +104,7 @@ class Tables extends Component {
                 {
                     (this.state.squad.length > 0) &&
                     <ul>
-                        <p>Squad Members:</p>
+                        <p>Squad Members of "{this.state.teams[this.state.currentTeamIndex].name}":</p>
                         {
                             this.state.squad.map((player) => {
                                 return(
@@ -114,7 +114,7 @@ class Tables extends Component {
                                 )
                             })
                         }
-                        <p>History:</p>
+                        <p>History of "{this.state.teams[this.state.currentTeamIndex].name}":</p>
                         {
                             this.state.teams[this.state.currentTeamIndex].history.map((round) => {
                                 return(
