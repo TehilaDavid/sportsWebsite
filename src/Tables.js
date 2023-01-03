@@ -59,14 +59,45 @@ class Tables extends Component {
                                 rivalTeamGoals += rivalRoundTeamGoals;
                             })
                             teamsToAdd.push({id: team.id, name: team.name, information: {score: points, goalsDifference: (currentTeamGoals - rivalTeamGoals)}, history: teamHistory})
-
+                            teamsToAdd.sort((a,b) => {
+                                const pointDifference = b.information.score - a.information.score
+                                if (pointDifference === 0) {
+                                    const goalsDifferenceDifference = b.information.goalsDifference - a.information.goalsDifference
+                                    if (goalsDifferenceDifference === 0) {
+                                        return (b.name - a.name)
+                                    }
+                                    return goalsDifferenceDifference
+                                }
+                                return pointDifference
+                            })
                             this.setState({
                                 teams: teamsToAdd,
                             })
                         });
                 })
+
+
             });
     }
+
+    teamsSort = (() => {
+        let help = []
+        help.sort((a,b) => {
+            const pointDifference = b.information.score - a.information.score
+            if (pointDifference === 0) {
+                const goalsDifferenceDifference = b.information.goalsDifference - a.information.goalsDifference
+                if (goalsDifferenceDifference === 0) {
+                    return (b.name - a.name)
+                }
+                return goalsDifferenceDifference
+            }
+            return pointDifference
+        })
+        this.setState({
+            teams: help,
+        })
+    })
+
 
     teamInformation = (teamId, teamIndex) => {
         axios.get('https://app.seker.live/fm1/squad/' + this.state.currentLeagueId + '/' + teamId )

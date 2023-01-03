@@ -15,15 +15,12 @@ class TopGoalScorers extends Component {
         axios.get('https://app.seker.live/fm1/history/' + leagueId)
             .then((response) => {
                 let isExist = false
-                let theScorer = ""
-                response.data.map((round) => {
+                response.data.map((game) => {
 
-                    round.goals.map((goal, goalIndex) => {
-
+                    game.goals.map((goal, goalIndex) => {
+                        debugger
+                        const scorerName = (goal.scorer.firstName + " " + goal.scorer.lastName)
                         this.state.scorers.map((scorer, index) => {
-                            const scorerName = (goal.scorer.firstName + " " + goal.scorer.lastName)
-                            debugger
-                            theScorer = scorerName
                             if (scorer.name === scorerName) {
                                 isExist = true
                                 let newScorer = this.state.scorers
@@ -35,26 +32,34 @@ class TopGoalScorers extends Component {
                             }
                         })
                         if (!isExist) {
-                            // if (theScorer !== "") {
-                            let newScorer = this.state.scorers
-                            newScorer.push({name: theScorer, goals: 1, index: (this.state.scorers.length)})
-                            //-1 if without ""
-                            this.setState({
-                                scorers: newScorer,
-                            })
-                            isExist = false
-                            // }
+                            if (scorerName !== "") {
+                                let newScorer = this.state.scorers
+                                newScorer.push({name: scorerName, goals: 1, index: (this.state.scorers.length)})
+                                this.setState({
+                                    scorers: newScorer,
+                                })
+                            }
                         }
                         isExist = false
                     })
+                    this.sortScorersByGoals()
                 })
             })
+    })
+
+    sortScorersByGoals = (() => {
+        let arrayToSort = this.state.scorers
+        arrayToSort.sort((a, b) => {
+            return b.goals - a.goals
+        })
+        this.setState({
+            scorers: arrayToSort,
+        })
     })
 
     render() {
         return (
             <div>
-                {this.state.scorers.length}
                 <LeaguesSelect responseClick={this.getTop.bind(this)}/>
 
                 {
@@ -64,12 +69,14 @@ class TopGoalScorers extends Component {
                         <th> Goals</th>
                         {
                             this.state.scorers.map((scorer, index) => {
-                                return (
-                                    <tr>
-                                        <td> {scorer.name} </td>
-                                        <td> {scorer.goals} </td>
-                                    </tr>
-                                )
+                                if (index < 3) {
+                                    return (
+                                        <tr>
+                                            <td> {scorer.name} </td>
+                                            <td> {scorer.goals} </td>
+                                        </tr>
+                                    )
+                                }
                             })
                         }
                     </table>
