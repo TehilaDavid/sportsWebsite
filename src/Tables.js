@@ -2,19 +2,24 @@ import React, {Component} from 'react';
 import axios from "axios";
 import LeaguesSelect from "./LeaguesSelect";
 
+const WIN_POINTS = 3;
+const STANDOFF_POINTS = 1;
+
 class Tables extends Component {
 
     state = {
         currentLeagueId: '',
         currentTeamIndex: '',
         teams: [],
-        squad: []
+        squad: [],
+        tableLoadingData: true
     }
 
     getTeams = (leagueId) => {
         this.setState({
             currentLeagueId : leagueId,
-            squad: []
+            squad: [],
+            tableLoadingData: true
         })
         let teamsToAdd = [];
         axios.get('https://app.seker.live/fm1/teams/' + leagueId)
@@ -48,56 +53,39 @@ class Tables extends Component {
                                     roundResults = response.data[index].awayTeam.name + " " + currentRoundTeamGoals + " - " + rivalRoundTeamGoals + " " + response.data[index].homeTeam.name;
                                 }
 
-                                teamHistory.push(("Round " + (index+1) + " -->  " + roundResults));
+                                teamHistory.push((roundResults));
 
                                 if (currentRoundTeamGoals > rivalRoundTeamGoals) {
-                                    points += 3;
+                                    points += WIN_POINTS;
                                 }else if (currentRoundTeamGoals === rivalRoundTeamGoals){
-                                    points += 1;
+                                    points += STANDOFF_POINTS;
                                 }
                                 currentTeamGoals += currentRoundTeamGoals;
                                 rivalTeamGoals += rivalRoundTeamGoals;
                             })
-                            teamsToAdd.push({id: team.id, name: team.name, information: {score: points, goalsDifference: (currentTeamGoals - rivalTeamGoals)}, history: teamHistory})
-                            teamsToAdd.sort((a,b) => {
-                                const pointDifference = b.information.score - a.information.score
-                                if (pointDifference === 0) {
-                                    const goalsDifferenceDifference = b.information.goalsDifference - a.information.goalsDifference
-                                    if (goalsDifferenceDifference === 0) {
-                                        return (b.name - a.name)
+                            teamsToAdd.push({id: team.id, name: team.name, information: {score: points, goalsDifference: {currentTeamGoals: currentTeamGoals,rivalTeamGoals: rivalTeamGoals}}, history: teamHistory})
+                            teamsToAdd.sort((a, b) => {
+                                let scoresCompare = (b.information.score - a.information.score)
+                                if ( scoresCompare === 0) {
+                                    let goalsCompare = ((b.information.goalsDifference.currentTeamGoals - b.information.goalsDifference.rivalTeamGoals )- (a.information.goalsDifference.currentTeamGoals - a.information.goalsDifference.rivalTeamGoals))
+                                    if (goalsCompare === 0){
+                                        return b.name.localeCompare(a.name);
                                     }
-                                    return goalsDifferenceDifference
+                                    return goalsCompare;
                                 }
-                                return pointDifference
+                                return scoresCompare;
                             })
                             this.setState({
                                 teams: teamsToAdd,
                             })
                         });
                 })
-
-
+                this.setState({
+                    tableLoadingData: false
+                })
             });
+
     }
-
-    teamsSort = (() => {
-        let help = []
-        help.sort((a,b) => {
-            const pointDifference = b.information.score - a.information.score
-            if (pointDifference === 0) {
-                const goalsDifferenceDifference = b.information.goalsDifference - a.information.goalsDifference
-                if (goalsDifferenceDifference === 0) {
-                    return (b.name - a.name)
-                }
-                return goalsDifferenceDifference
-            }
-            return pointDifference
-        })
-        this.setState({
-            teams: help,
-        })
-    })
-
 
     teamInformation = (teamId, teamIndex) => {
         axios.get('https://app.seker.live/fm1/squad/' + this.state.currentLeagueId + '/' + teamId )
@@ -113,18 +101,21 @@ class Tables extends Component {
         return (
             <div>
                 <LeaguesSelect responseClick={this.getTeams.bind(this)}/>
-
                 {
-                    (this.state.teams.length > 0) &&
-                    <table>
-                        <th> Leagues Teams </th>
-                        <th> Team Scores </th>
+                    (!this.state.tableLoadingData ) &&
+                    <table className={"league-table"}>
+                        <tr>
+                            <th className={"league-table-th"}> Leagues Teams </th>
+                            <th className={"league-table-th"}> Team Scores </th>
+                            <th className={"league-table-th"}> Team Goals Difference </th>
+                        </tr>
                         {
                             this.state.teams.map((team, index) => {
                                 return (
-                                    <tr>
-                                        <td onClick={() => this.teamInformation(team.id,index)}> {team.name} </td>
-                                        <td> {team.information.score} </td>
+                                    <tr className={"emphasis league-table-tr " + ((index == 0) ? "top" : ((index >= (this.state.teams.length - 3)) ? "lower" : ""))}  onClick={() => this.teamInformation(team.id,index)}>
+                                        <td className={"league-table-td"}> {team.name} </td>
+                                        <td className={"league-table-td"}> {team.information.score} </td>
+                                        <td className={"league-table-td"}> {team.information.goalsDifference.currentTeamGoals} : {team.information.goalsDifference.rivalTeamGoals} </td>
                                     </tr>
                                 )
                             })
@@ -134,28 +125,34 @@ class Tables extends Component {
 
                 {
                     (this.state.squad.length > 0) &&
-                    <ul>
-                        <p>Squad Members of "{this.state.teams[this.state.currentTeamIndex].name}":</p>
-                        {
-                            this.state.squad.map((player) => {
-                                return(
-                                    <li>
-                                        {player.firstName} {player.lastName}
-                                    </li>
-                                )
-                            })
-                        }
-                        <p>History of "{this.state.teams[this.state.currentTeamIndex].name}":</p>
-                        {
-                            this.state.teams[this.state.currentTeamIndex].history.map((round) => {
-                                return(
-                                    <li>
-                                        {round}
-                                    </li>
-                                )
-                            })
-                        }
-                    </ul>
+                    <div>
+                        <ul>
+                            <p>Squad Members of "{this.state.teams[this.state.currentTeamIndex].name}"</p>
+                            {
+                                this.state.squad.map((player) => {
+                                    return(
+                                        <li>
+                                            {player.firstName} {player.lastName}
+                                        </li>
+                                    )
+                                })
+                            }
+                        </ul>
+                        <p>History of "{this.state.teams[this.state.currentTeamIndex].name}"</p>
+                        <table className={"history-table"}>
+                            {
+                                this.state.teams[this.state.currentTeamIndex].history.map((round, index) => {
+                                    return(
+                                        <tr className={"history-table-tr"}>
+                                            <td className={"history-table-td"}>Round {index+1}:</td>
+                                            <td className={"history-table-td"}>{round}</td>
+                                        </tr>
+
+                                    )
+                                })
+                            }
+                        </table>
+                    </div>
                 }
             </div>
 

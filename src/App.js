@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
-import {BrowserRouter, NavLink, Route, Routes} from "react-router-dom";
-import './App.css';
 import Tables from "./Tables";
 import LeaguesResults from "./LeaguesResults";
 import TopGoalScorers from "./TopGoalScorers";
 import Statistics from "./Statistics";
+import {BrowserRouter, NavLink, Route, Routes} from "react-router-dom";
+import './App.css';
 
 
 class App extends Component {
@@ -14,18 +14,18 @@ class App extends Component {
         return (
             <div className={"App"}>
                 <BrowserRouter>
-                    <NavLink style={{margin : "10px"}} to={"/tables"}>Tables</NavLink>
-                    <NavLink style={{margin : "10px"}} to={"/leaguesResults"}>Leagues Results History</NavLink>
-                    <NavLink style={{margin : "10px"}} to={"/topGoalScorers"}>Top Goal Scorers</NavLink>
-                    <NavLink style={{margin : "10px"}} to={"/statistics"}>Statistics</NavLink>
-
+                    <NavLink activeClassName={"active"} className={"main-link"} to={"/tables"}>Leagues Table</NavLink>
+                    <NavLink activeClassName={"active"} className={"main-link"} to={"/leagues-results"}>Leagues Results History</NavLink>
+                    <NavLink activeClassName={"active"} className={"main-link"} to={"/top-goal-scorers"}>Top Goal Scorers</NavLink>
+                    <NavLink activeClassName={"active"} className={"main-link"} to={"/statistics"}>Leagues Statistics</NavLink>
 
                     <Routes>
                         <Route path={"/tables"} element={<Tables />}/>
-                        <Route path={"/leaguesResults"} element={<LeaguesResults />}/>
-                        <Route path={"/topGoalScorers"} element={<TopGoalScorers />}/>
+                        <Route path={"/leagues-results"} element={<LeaguesResults />}/>
+                        <Route path={"/top-goal-scorers"} element={<TopGoalScorers />}/>
                         <Route path={"/statistics"} element={<Statistics />}/>
                         {/*<Route path={"*"} element={<NoPage/>}/>*/}
+
                     </Routes>
                 </BrowserRouter>
             </div>

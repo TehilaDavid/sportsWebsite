@@ -1,40 +1,109 @@
+.App{
+  font-size: 25px;
+}
+
 div{
   text-align: center;
-  font-size: 30px;
+  margin: 20px;
+  font-family: "Lucida Console", "Courier New", monospace;
+  padding: 1px;
 }
-button {
+
+button, select {
   margin: 10px;
-}
-
-table {
   font-size: 20px;
+}
+
+table, tr, td, th{
+  margin:  auto;
   text-align: center;
-  border-radius: 10px;
-  margin-outside: 10px;
 }
 
-tr, td, th {
-  width: 300px;
-  height: 30px;
-}
-
-table, tr, td {
-  border: 2px solid black;
-  margin: 0 auto;
+p {
+  text-decoration-line: underline;
+  text-decoration-style: double;
+  text-decoration-thickness: 2px;
+  font-size: 40px;
+  font-family: "Helvetica", Sans-serif;
 }
 
 ul {
   list-style-type: none;
   margin: 20px;
+  padding: 0;
+  font-family: "Lucida Handwriting ", Cursive;
+}
+
+li{
+  padding: 10px;
+  font-size: 30px;
+}
+
+.league-table-tr, .league-table-td, .league-table-th{
+  width: 300px;
+  height: 30px;
+}
+
+.league-table-tr, .league-table-td, .league-table{
+  border: 2px solid black;
+}
+
+.league-table{
+  font-size: 20px;
+  border-radius: 10px;
+}
+
+.emphasis :hover {background-color: darkgray;}
+
+.history-table{
+  border-collapse: collapse;
+  font-family: "Lucida Handwriting ", Cursive;
+}
+
+.history-table-td{
+  padding: 8px;
+  border-bottom: 1px solid #ddd;
+  font-size: 23px;
+}
+
+.top {
+  text-shadow: 2px 2px 5px blue;
+  font-weight: bold;
+}
+
+.lower {
+  text-shadow: 2px 2px 5px red;
+  font-weight: bold;
+}
+
+.round-results {
+  list-style-type: none;
+  margin: 20px;
   border-radius: 100px;
   border-style: inset;
-  padding: 0;
+  font-family: "Courier New", Monospace;
 }
 
-
-p {
-  text-decoration: underline;
+.error-message {
+  color: red;
 }
 
+.statistics-table {
+  border-collapse: collapse;
+  width: 1000px;
+  height: auto;
+}
 
+.statistics-table-th, .statistics-table-td {
+  text-align: center;
+  padding: 10px;
+}
 
+.statistics-table-tr:nth-child(even) {background-color: #f2f2f2;}
+
+.active{
+  color: red;
+}
+.main-link{
+  margin: 10px;
+}

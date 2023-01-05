@@ -4,45 +4,42 @@ import LeaguesSelect from "./LeaguesSelect";
 
 class TopGoalScorers extends Component {
     state = {
-        scorers: []
+        scorers: [],
+        tableLoadingData: true
     }
 
 
     getTop = ((leagueId) => {
         this.setState({
             scorers: [],
+            tableLoadingData: true
         })
         axios.get('https://app.seker.live/fm1/history/' + leagueId)
             .then((response) => {
-                let isExist = false
                 response.data.map((game) => {
 
-                    game.goals.map((goal, goalIndex) => {
-                        debugger
+                    game.goals.map((goal) => {
+                        let isExist = false
                         const scorerName = (goal.scorer.firstName + " " + goal.scorer.lastName)
                         this.state.scorers.map((scorer, index) => {
                             if (scorer.name === scorerName) {
                                 isExist = true
-                                let newScorer = this.state.scorers
-                                let newGoals = scorer.goals + 1
-                                newScorer[scorer.index].goals = newGoals
+                                let scorersArray = this.state.scorers
+                                scorersArray[index].goals = scorer.goals + 1
                                 this.setState({
-                                    scorer: newScorer,
+                                    scorers: scorersArray,
                                 })
                             }
                         })
                         if (!isExist) {
-                            if (scorerName !== "") {
-                                let newScorer = this.state.scorers
-                                newScorer.push({name: scorerName, goals: 1, index: (this.state.scorers.length)})
-                                this.setState({
-                                    scorers: newScorer,
-                                })
-                            }
+                            let newScorer = this.state.scorers
+                            newScorer.push({name: scorerName, goals: 1})
+                            this.setState({
+                                scorers: newScorer,
+                            })
                         }
-                        isExist = false
                     })
-                    this.sortScorersByGoals()
+                    this.sortScorersByGoals();
                 })
             })
     })
@@ -54,6 +51,7 @@ class TopGoalScorers extends Component {
         })
         this.setState({
             scorers: arrayToSort,
+            tableLoadingData: false
         })
     })
 
@@ -63,17 +61,20 @@ class TopGoalScorers extends Component {
                 <LeaguesSelect responseClick={this.getTop.bind(this)}/>
 
                 {
-                    (this.state.scorers.length > 0) &&
-                    <table>
-                        <th> Scorer Name</th>
-                        <th> Goals</th>
+                    (!this.state.tableLoadingData) &&
+                    <table className={"league-table"}>
+                        <tr>
+                            <th> Scorer Name</th>
+                            <th> Goals</th>
+                        </tr>
+
                         {
                             this.state.scorers.map((scorer, index) => {
                                 if (index < 3) {
                                     return (
-                                        <tr>
-                                            <td> {scorer.name} </td>
-                                            <td> {scorer.goals} </td>
+                                        <tr className={"league-table-tr"}>
+                                            <td className={"league-table-td"}> {scorer.name} </td>
+                                            <td className={"league-table-td"}> {scorer.goals} </td>
                                         </tr>
                                     )
                                 }
