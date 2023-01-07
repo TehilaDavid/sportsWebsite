@@ -122,7 +122,7 @@ class Tables extends Component {
                         {
                             this.state.teams.map((team, index) => {
                                 return (
-                                    <tr className={"emphasis league-table-tr " + ((index == 0) ? "top" : ((index >= (this.state.teams.length - 3)) ? "lower" : ""))}  onClick={() => this.teamInformation(team.id,index)}>
+                                    <tr className={"emphasis league-table-tr " + ((index === 0) ? "top" : ((index >= (this.state.teams.length - 3)) ? "lower" : ""))}  onClick={() => this.teamInformation(team.id,index)}>
                                         <td className={"league-table-td"}> {team.name} </td>
                                         <td className={"league-table-td"}> {team.information.score} </td>
                                         <td className={"league-table-td"}> {team.information.goalsDifference.currentTeamGoals} : {team.information.goalsDifference.rivalTeamGoals} </td>
