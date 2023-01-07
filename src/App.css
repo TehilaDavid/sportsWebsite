@@ -35,8 +35,8 @@ ul {
 }
 
 li{
-  padding: 10px;
-  font-size: 30px;
+  padding: 7px;
+  font-size: 20px;
 }
 
 .league-table-tr, .league-table-td, .league-table-th{
@@ -106,4 +106,9 @@ li{
 }
 .main-link{
   margin: 10px;
+}
+
+input{
+  width: 40px;
+  font-size: 18px;
 }

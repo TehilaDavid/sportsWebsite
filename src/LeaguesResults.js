@@ -68,9 +68,11 @@ class LeaguesResults extends Component {
                 {
                     (this.state.leaguesHistory.length > 0) &&
                     <div>
-                        Max rounds : <input type={"number"} value={this.state.max} onChange={this.changeMaxValue}/>
+                        <label for = {"maxRound"}>Max rounds: </label>
+                        <input id={"maxRound"} type={"number"} value={this.state.max} onChange={this.changeMaxValue}/>
                         <br/>
-                        Min rounds : <input type={"number"} value={this.state.min} onChange={this.changeMinValue}/>
+                        <label htmlFor={"minRound"}>Min rounds: </label>
+                        <input id={"minRound"} type={"number"} value={this.state.min} onChange={this.changeMinValue}/>
                         {
                             (this.state.min !== "" && this.state.max !== "" && (this.state.min <= this.state.max)) &&
                             <div>

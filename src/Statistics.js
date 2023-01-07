@@ -44,8 +44,6 @@ class Statistics extends Component {
                         if ((helperTimeGoal[MAX_INDEX] === null) || (goal.minute > helperTimeGoal[MAX_INDEX].minute)) {
                             helperTimeGoal[MAX_INDEX] = {teamName: ((goal.home) ? game.homeTeam.name : game.awayTeam.name),nameScorer: (goal.scorer.firstName + " " + goal.scorer.lastName),minute: goal.minute,round: game.round}
                         }
-
-
                     })
                 })
                 this.setState({

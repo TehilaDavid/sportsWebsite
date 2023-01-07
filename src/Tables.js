@@ -16,11 +16,8 @@ class Tables extends Component {
     }
 
     getTeams = (leagueId) => {
-        this.setState({
-            currentLeagueId : leagueId,
-            squad: [],
-            tableLoadingData: true
-        })
+        this.reset(leagueId)
+
         let teamsToAdd = [];
         axios.get('https://app.seker.live/fm1/teams/' + leagueId)
             .then((response) => {
@@ -64,17 +61,8 @@ class Tables extends Component {
                                 rivalTeamGoals += rivalRoundTeamGoals;
                             })
                             teamsToAdd.push({id: team.id, name: team.name, information: {score: points, goalsDifference: {currentTeamGoals: currentTeamGoals,rivalTeamGoals: rivalTeamGoals}}, history: teamHistory})
-                            teamsToAdd.sort((a, b) => {
-                                let scoresCompare = (b.information.score - a.information.score)
-                                if ( scoresCompare === 0) {
-                                    let goalsCompare = ((b.information.goalsDifference.currentTeamGoals - b.information.goalsDifference.rivalTeamGoals )- (a.information.goalsDifference.currentTeamGoals - a.information.goalsDifference.rivalTeamGoals))
-                                    if (goalsCompare === 0){
-                                        return b.name.localeCompare(a.name);
-                                    }
-                                    return goalsCompare;
-                                }
-                                return scoresCompare;
-                            })
+                            this.sortArray(teamsToAdd);
+
                             this.setState({
                                 teams: teamsToAdd,
                             })
@@ -85,6 +73,28 @@ class Tables extends Component {
                 })
             });
 
+    }
+
+    reset = (leagueId) => {
+        this.setState({
+            currentLeagueId : leagueId,
+            squad: [],
+            tableLoadingData: true
+        })
+    }
+
+    sortArray = (teamsToAdd) => {
+        teamsToAdd.sort((a, b) => {
+            let scoresCompare = (b.information.score - a.information.score)
+            if ( scoresCompare === 0) {
+                let goalsDifferenceCompare = ((b.information.goalsDifference.currentTeamGoals - b.information.goalsDifference.rivalTeamGoals )- (a.information.goalsDifference.currentTeamGoals - a.information.goalsDifference.rivalTeamGoals))
+                if (goalsDifferenceCompare === 0){
+                    return ((a.name).localeCompare(b.name));
+                }
+                return goalsDifferenceCompare;
+            }
+            return scoresCompare;
+        })
     }
 
     teamInformation = (teamId, teamIndex) => {
